@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/05/23 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/05/25 11:08:30 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/25 13:46:00 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ INC = -I ./include
 SRC_DIR = src
 BUILD_DIR = obj
 
-SRC = $(SRC_DIR)/main.c 
+SRC = $(SRC_DIR)/main.c $(SRC_DIR)/parsing.c
 OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC:.c=.o))
 
 # COLORS
