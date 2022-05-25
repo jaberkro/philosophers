@@ -6,16 +6,13 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/05/23 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/05/23 18:12:18 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/05/25 11:08:30 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 FLAGS = -Wall -Wextra -Werror -g
-INC = -I ./libft -I ./include
-
-LIBFT_DIR = libft/
-LIBFT = libft/libft.a
+INC = -I ./include
 
 SRC_DIR = src
 BUILD_DIR = obj
@@ -39,22 +36,17 @@ $(BUILD_DIR):
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	CC $(FLAGS) $(INC) -c $^ -o $@
 
-$(NAME): $(LIBFT) $(OBJ)
-	cp $(LIBFT) ./$(NAME)
-	CC $(FLAGS) $(OBJ) $(LIBFT) $(INC) -o $(NAME)
-	@echo "$(RED)Done $(GREEN)COM$(YELLOW)PI$(BLUE)LING $(PINK)PIPEX$(RESET):)"
-
-$(LIBFT):
-	$(MAKE) bonus -C $(LIBFT_DIR)
+$(NAME): $(OBJ)
+	CC $(FLAGS) $(OBJ) $(INC) -o $(NAME)
+	@echo "$(RED)Done $(GREEN)COM$(YELLOW)PI$(BLUE)LING $(PINK)PHILOSOPHERS$(RESET):)"
 
 clean:
 	rm -rf $(BUILD_DIR)
-	$(MAKE) fclean -C $(LIBFT_DIR)
-	@echo "$(RED)Done $(GREEN)CLEANING$(YELLOW) PIPEX$(PINK) :)$(RESET)"
+	@echo "$(RED)Done $(GREEN)CLEANING$(YELLOW) PHILOSOPHERS$(PINK) :)$(RESET)"
 
 fclean: clean
 	rm -f $(NAME)
-	@echo "$(RED)Done $(GREEN)FANCY CLEANING$(YELLOW) PIPEX$(PINK) :)$(RESET)"
+	@echo "$(RED)Done $(GREEN)FANCY CLEANING$(YELLOW) PHILOSOPHERS$(PINK) :)$(RESET)"
 
 re: fclean all
 
