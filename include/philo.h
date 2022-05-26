@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/25 17:41:36 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/26 16:28:04 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,28 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+typedef struct s_philo {
+	int	id;
+	int	eat_time;
+	int	to_eat;
+	int	eaten;
+}	t_philo;
+
 typedef struct s_data {
-	unsigned long	inputs[5];
-	struct timeval	start_time;
-	int				error;
+	unsigned long	philosophers;
+	unsigned long	time_to_die;
+	unsigned long	time_to_eat;
+	unsigned long	time_to_sleep;
+	unsigned long	times_must_eat;
+	unsigned long	start_time;
+	t_philo			*philos;
+	int				*forks;
 }	t_data;
 
-t_data	parsing(int argc, char **argv);
+int				print_return(char *message, int value);
+int				error_check(int argc, char **argv);
+
+int				parsing(int argc, char **argv, t_data *data);
+unsigned long	get_time(void);
 
 #endif
