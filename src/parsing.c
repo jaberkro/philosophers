@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/26 18:40:03 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/28 16:58:14 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	init_forks(t_data *data)
 {
-	int	i;
+	unsigned long	i;
 
 	i = 0;
 	data->forks = malloc (data->philosophers * sizeof(int));
@@ -50,7 +50,7 @@ static int	init_philos(t_data *data)
 static unsigned long	atoul(const char *input)
 {
 	unsigned long	number;
-	unsigned long	i;
+	int				i;
 
 	number = 0;
 	i = 0;

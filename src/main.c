@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/26 18:30:49 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/28 16:48:27 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!parsing(argc, argv, &data))
 		return (1);
+	make_threads(data);
 	
 	// printf("%d\n", data.philos[0].to_eat);
 	// if (data.error == 1)

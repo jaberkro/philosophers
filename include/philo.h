@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/26 16:28:04 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/05/28 17:48:03 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@
 # include <sys/time.h>
 
 typedef struct s_philo {
-	int	id;
-	int	eat_time;
-	int	to_eat;
-	int	eaten;
+	int			id;
+	pthread_t	thread_id;
+	int			eat_time;
+	int			to_eat;
+	int			eaten;
 }	t_philo;
 
 typedef struct s_data {
@@ -35,6 +36,7 @@ typedef struct s_data {
 	unsigned long	start_time;
 	t_philo			*philos;
 	int				*forks;
+	pthread_mutex_t	print;
 }	t_data;
 
 int				print_return(char *message, int value);
@@ -42,5 +44,7 @@ int				error_check(int argc, char **argv);
 
 int				parsing(int argc, char **argv, t_data *data);
 unsigned long	get_time(void);
+
+void			make_threads(t_data data);
 
 #endif
