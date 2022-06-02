@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/28 17:48:03 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/02 17:58:43 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,6 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct s_philo {
-	int			id;
-	pthread_t	thread_id;
-	int			eat_time;
-	int			to_eat;
-	int			eaten;
-}	t_philo;
-
 typedef struct s_data {
 	unsigned long	philosophers;
 	unsigned long	time_to_die;
@@ -34,10 +26,17 @@ typedef struct s_data {
 	unsigned long	time_to_sleep;
 	unsigned long	times_must_eat;
 	unsigned long	start_time;
-	t_philo			*philos;
-	int				*forks;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
 }	t_data;
+
+typedef struct s_philo {
+	int				id;
+	pthread_t		thread_id;
+	unsigned long	eat_time;
+	unsigned long	eaten;
+	t_data			*data;
+}	t_philo;
 
 int				print_return(char *message, int value);
 int				error_check(int argc, char **argv);
@@ -45,6 +44,7 @@ int				error_check(int argc, char **argv);
 int				parsing(int argc, char **argv, t_data *data);
 unsigned long	get_time(void);
 
-void			make_threads(t_data data);
+void			make_threads(t_data *data);
+void			*eating(void *vargp);
 
 #endif

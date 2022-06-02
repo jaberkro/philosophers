@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/28 16:48:27 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/02 19:31:39 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,7 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!parsing(argc, argv, &data))
 		return (1);
-	make_threads(data);
-	
-	// printf("%d\n", data.philos[0].to_eat);
-	// if (data.error == 1)
-	// 	return (1);
-	// if (gettimeofday(&data.start_time, NULL) < 0)
-	// {
-	// 	printf("Gettimeofday failed\n");
-	// 	return (1);
-	// }
-	// printf("%ld - Starttime of simulation in microseconds\n", \
-	// data.start_time.tv_sec * 1000000 + data.start_time.tv_sec);
+	make_threads(&data);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/05/28 16:58:14 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/02 17:27:32 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,35 +17,35 @@ static int	init_forks(t_data *data)
 	unsigned long	i;
 
 	i = 0;
-	data->forks = malloc (data->philosophers * sizeof(int));
+	data->forks = malloc (data->philosophers * sizeof(pthread_mutex_t));
 	if (data->forks == NULL)
 		return (print_return("Error: malloc failed\n", 0));
 	while (i < data->philosophers)
 	{
-		data->forks[i] = i + 1;
+		pthread_mutex_init(&(data->forks[i]), NULL);
 		i++;
 	}
 	return (1);
 }
 
-static int	init_philos(t_data *data)
-{
-	unsigned long	i;
+// static int	init_philos(t_data *data)
+// {
+// 	unsigned long	i;
 
-	i = 0;
-	data->philos = malloc ((data->philosophers) * sizeof(t_philo));
-	if (data->philos == NULL)
-		return (print_return("Error: Malloc failed", 0));
-	while (i < data->philosophers)
-	{
-		data->philos[i].id = i + 1;
-		data->philos[i].eat_time = 0;
-		data->philos[i].to_eat = data->times_must_eat;
-		data->philos[i].eaten = 0;
-		i++;
-	}
-	return (1);
-}
+// 	i = 0;
+// 	data->philos = malloc ((data->philosophers) * sizeof(t_philo));
+// 	if (data->philos == NULL)
+// 		return (print_return("Error: Malloc failed", 0));
+// 	while (i < data->philosophers)
+// 	{
+// 		data->philos[i].id = i + 1;
+// 		data->philos[i].eat_time = 0;
+// 		data->philos[i].to_eat = data->times_must_eat;
+// 		data->philos[i].eaten = 0;
+// 		i++;
+// 	}
+// 	return (1);
+// }
 
 static unsigned long	atoul(const char *input)
 {
@@ -74,10 +74,11 @@ int	parsing(int argc, char **argv, t_data *data)
 	if (argc == 6)
 		data->times_must_eat = atoul(argv[5]);
 	data->start_time = get_time();
-	if (!init_philos(data))
-		return (0);
+	// if (!init_philos(data))
+	// 	return (0);
 	if (!init_forks(data))
 		return (0);
+	pthread_mutex_init(&(data->print), NULL);
 	return (1);
 }
 
