@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 20:09:21 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/03 20:20:20 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	*die(void *vargp)
 		while (i < philosophers)
 		{
 			current_time = get_time();
+			if (philosophers == 1)
+				usleep((*philos)[i].data->time_to_die * 1000);
 			if (((*philos)[i].eat_time > 0 && (*philos)[i].eaten != (*philos)[i].data->times_must_eat && current_time - (*philos)[i].eat_time > (*philos)[i].data->time_to_die) \
 				|| (philosophers == 1))
 			{
@@ -75,11 +77,11 @@ void	*eat(void *vargp)
 
 	philo = (t_philo *)vargp;
 	if (philo->id % 2 == 0 && philo->eaten == 0)
-		usleep(200);
+		usleep(60);
 	right_fork = (philo->id) % philo->data->philosophers;
 	pthread_mutex_lock(&philo->data->forks[philo->id - 1]);
-	if (philo->data->done)
-		return (vargp);
+	// if (philo->data->done)
+	// 	return (vargp);
 	print_message(philo->data, philo->id, "has taken a fork\n");
 	pthread_mutex_lock(&philo->data->forks[right_fork]);
 	if (philo->data->done)
