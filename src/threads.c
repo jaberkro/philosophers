@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/02 19:30:47 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/03 12:57:21 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,21 @@ void	sleeping(t_philo *philo)
 void	*eating(void *vargp)
 {
 	t_philo		*philo;
+	int			right_fork;
 
 	philo = (t_philo *)vargp;
 	if (philo->id % 2 == 0 && philo->eaten == 0)
-		usleep(10);
+		usleep(20);
+	right_fork = (philo->id) % philo->data->philosophers;
+	pthread_mutex_lock(&philo->data->forks[philo->id - 1]);
+	print_message(philo->data, philo->id, "has taken a fork\n");
+	pthread_mutex_lock(&philo->data->forks[right_fork]);
+	print_message(philo->data, philo->id, "has taken a fork\n");
 	philo->eat_time = get_time();
-	pthread_mutex_lock(&philo->data->forks[philo->id]);
-	pthread_mutex_lock(&philo->data->forks[(philo->id + 1) % philo->data->philosophers]);
 	print_message(philo->data, philo->id, "is eating\n");
 	usleep(philo->data->time_to_eat * 1000);
-	pthread_mutex_unlock(&philo->data->forks[philo->id]);
-	pthread_mutex_unlock(&philo->data->forks[(philo->id + 1) % philo->data->philosophers]);
+	pthread_mutex_unlock(&philo->data->forks[philo->id - 1]);
+	pthread_mutex_unlock(&philo->data->forks[right_fork]);
 	sleeping(philo);
 	return (vargp);
 }
@@ -68,7 +72,6 @@ void	make_threads(t_data *data)
 		philos[i].eat_time = 0;
 		philos[i].eaten = 0;
 		pthread_create(&(philos[i].thread_id), NULL, eating, (void *)&philos[i]);
-		//usleep (10);
 		i++;
 	}
 	while (i > 0)
@@ -76,10 +79,8 @@ void	make_threads(t_data *data)
 		pthread_join(philos[i].thread_id, NULL);
 		i--;
 	}
-	//usleep(100000000);
 	return ;
 }
 
 // need a thread that will check if someone dies
 // need more accurate time stamps
-// 1 philo should not eat and just die
