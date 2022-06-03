@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/02 17:58:43 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/03 12:59:06 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,6 @@ int				parsing(int argc, char **argv, t_data *data);
 unsigned long	get_time(void);
 
 void			make_threads(t_data *data);
-void			*eating(void *vargp);
+void			*eat(void *vargp);
 
 #endif

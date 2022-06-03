@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 12:57:21 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/03 12:58:50 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,17 @@ void	print_message(t_data *data, int id, char *activity)
 	return ;
 }
 
-void	sleeping(t_philo *philo)
+void	sleep_think(t_philo *philo)
 {
 	print_message(philo->data, philo->id, "is sleeping\n");
 	usleep(philo->data->time_to_sleep * 1000);
 	philo->eaten++;
 	print_message(philo->data, philo->id, "is thinking\n");
 	if (philo->eaten != philo->data->times_must_eat)
-		eating((void *)philo);
+		eat((void *)philo);
 }
 
-void	*eating(void *vargp)
+void	*eat(void *vargp)
 {
 	t_philo		*philo;
 	int			right_fork;
@@ -51,7 +51,7 @@ void	*eating(void *vargp)
 	usleep(philo->data->time_to_eat * 1000);
 	pthread_mutex_unlock(&philo->data->forks[philo->id - 1]);
 	pthread_mutex_unlock(&philo->data->forks[right_fork]);
-	sleeping(philo);
+	sleep_think(philo);
 	return (vargp);
 }
 
@@ -71,7 +71,7 @@ void	make_threads(t_data *data)
 		philos[i].data = data;
 		philos[i].eat_time = 0;
 		philos[i].eaten = 0;
-		pthread_create(&(philos[i].thread_id), NULL, eating, (void *)&philos[i]);
+		pthread_create(&(philos[i].thread_id), NULL, eat, (void *)&philos[i]);
 		i++;
 	}
 	while (i > 0)
