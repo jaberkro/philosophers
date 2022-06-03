@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 12:59:06 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/03 17:42:01 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_data {
 	unsigned long	start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
+	int				done;
 }	t_data;
 
 typedef struct s_philo {
@@ -46,5 +47,7 @@ unsigned long	get_time(void);
 
 void			make_threads(t_data *data);
 void			*eat(void *vargp);
+void			beauty_sleep(t_philo *philo);
+void			fancy_eat(t_philo *philo);
 
 #endif

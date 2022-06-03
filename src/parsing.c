@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 12:40:50 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/03 19:38:46 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ int	parsing(int argc, char **argv, t_data *data)
 	data->time_to_eat = atoul(argv[3]);
 	data->time_to_sleep = atoul(argv[4]);
 	data->times_must_eat = -1;
+	data->done = 0;
 	if (argc == 6)
 		data->times_must_eat = atoul(argv[5]);
-	data->start_time = get_time();
 	if (!init_forks(data))
 		return (0);
 	pthread_mutex_init(&(data->print), NULL);
