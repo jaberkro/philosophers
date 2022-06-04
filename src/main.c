@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/04 19:30:29 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/04 19:32:57 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ static void	make_threads(t_data *data, t_philo **philos)
 	if (casualty((*philos)[0].data))
 		return ;
 	pthread_mutex_lock(&data->eat_check);
-		if (!casualty((*philos)[0].data))
-			pthread_join(die_thread_id, NULL);
-		(*philos)[0].data->done = 1;
+	if (!casualty((*philos)[0].data))
+		pthread_join(die_thread_id, NULL);
+	(*philos)[0].data->done = 1;
 	pthread_mutex_unlock(&data->eat_check);
 	return ;
 }
