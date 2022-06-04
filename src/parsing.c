@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/04 19:19:55 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/04 19:35:34 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,10 @@ int	parsing(int argc, char **argv, t_data *data, t_philo **philos)
 		return (0);
 	pthread_mutex_init(&(data->print), NULL);
 	pthread_mutex_init(&(data->eat_check), NULL);
+	pthread_mutex_lock(&data->eat_check);
 	data->done = 0;
-	//pthread_mutex_lock(&data->eat_check);
-	//pthread_mutex_unlock(&data->eat_check);
+	pthread_mutex_unlock(&data->eat_check);
 	if (!init_philos(data, philos))
 		return (0);
 	return (1);
 }
-
-	//printf("philos: %lu, die: %lu eat: %lu sleep: %lu times: %lu start: %lu\n", data->philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->times_must_eat, data->start_time);

@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/04 19:32:57 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/04 19:34:05 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static void	make_threads(t_data *data, t_philo **philos)
 		return ;
 	while (i - 1 > 0 && !casualty((*philos)[0].data))
 	{
+		printf("waiting\n");
 		pthread_join((*philos)[i - 1].thread_id, NULL);
 		i--;
 	}
