@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 17:42:01 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/04 16:58:37 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_data {
 	unsigned long	start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
+	pthread_mutex_t	eat_check;
 	int				done;
 }	t_data;
 
@@ -36,18 +37,22 @@ typedef struct s_philo {
 	pthread_t		thread_id;
 	unsigned long	eat_time;
 	unsigned long	eaten;
+	unsigned long	right;
+	unsigned long	left;
 	t_data			*data;
 }	t_philo;
 
 int				print_return(char *message, int value);
 int				error_check(int argc, char **argv);
 
-int				parsing(int argc, char **argv, t_data *data);
+int				parsing(int argc, char **argv, t_data *data, t_philo **philos);
 unsigned long	get_time(void);
 
-void			make_threads(t_data *data);
 void			*eat(void *vargp);
+void			*die(void *vargp);
+void			sleep_think(t_philo *philo);
 void			beauty_sleep(t_philo *philo);
 void			fancy_eat(t_philo *philo);
+int				casualty(t_data *data);
 
 #endif
