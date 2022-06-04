@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 20:20:20 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/04 19:28:12 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,18 @@ void	print_message(t_data *data, int id, char *activity)
 	return ;
 }
 
+int	casualty(t_data *data)
+{
+	int	dead;
+
+	dead = 0;
+	pthread_mutex_lock(&data->eat_check);
+	if (data->done)
+		dead = 1;
+	pthread_mutex_unlock(&data->eat_check);
+	return (dead);
+}
+
 void	*die(void *vargp)
 {
 	t_philo			**philos;
@@ -30,8 +42,8 @@ void	*die(void *vargp)
 	unsigned long	philosophers;
 	unsigned long	current_time;
 
-	philos = (t_philo **)vargp;
-	philosophers = philos[0]->data->philosophers;
+	philos = vargp;
+	philosophers = (*philos)[0].data->philosophers;
 	while (42)
 	{
 		i = 0;
@@ -40,92 +52,63 @@ void	*die(void *vargp)
 			current_time = get_time();
 			if (philosophers == 1)
 				usleep((*philos)[i].data->time_to_die * 1000);
+			pthread_mutex_lock(&(*philos)[i].data->eat_check);
 			if (((*philos)[i].eat_time > 0 && (*philos)[i].eaten != (*philos)[i].data->times_must_eat && current_time - (*philos)[i].eat_time > (*philos)[i].data->time_to_die) \
 				|| (philosophers == 1))
 			{
-				print_message(philos[i]->data, philos[i]->id, "died\n");
-				philos[i]->data->done = 1;
+				print_message((*philos)[i].data, (*philos)[i].id, "died\n");
+				(*philos)[i].data->done = 1;
 				return (NULL);
 			}
+			pthread_mutex_unlock(&(*philos)[i].data->eat_check);
 			i++;
 		}
-		if (philos[0]->data->done)
-		{
+		if (casualty((*philos)[0].data))
 			return (NULL);
-		}
 		usleep(10);
 	}
 }
 
 void	sleep_think(t_philo *philo)
 {
-	if (philo->data->done)
+	if (casualty(philo->data))
 		return ;
 	print_message(philo->data, philo->id, "is sleeping\n");
 	beauty_sleep(philo);
-	if (philo->data->done)
+	if (casualty(philo->data))
 		return ;
 	print_message(philo->data, philo->id, "is thinking\n");
-	if (philo->eaten != philo->data->times_must_eat && !philo->data->done)
+	pthread_mutex_lock(&philo->data->eat_check);
+	if (philo->eaten != philo->data->times_must_eat && !casualty(philo->data))
 		eat((void *)philo);
+	pthread_mutex_unlock(&philo->data->eat_check);
 }
 
 void	*eat(void *vargp)
 {
 	t_philo		*philo;
-	int			right_fork;
 
 	philo = (t_philo *)vargp;
 	if (philo->id % 2 == 0 && philo->eaten == 0)
-		usleep(60);
-	right_fork = (philo->id) % philo->data->philosophers;
-	pthread_mutex_lock(&philo->data->forks[philo->id - 1]);
-	// if (philo->data->done)
-	// 	return (vargp);
+		usleep(150); // does this cause the problem of greedy fork takers?
+	pthread_mutex_lock(&philo->data->forks[philo->left]);
+	if (casualty(philo->data))
+		return (NULL);
 	print_message(philo->data, philo->id, "has taken a fork\n");
-	pthread_mutex_lock(&philo->data->forks[right_fork]);
-	if (philo->data->done)
-		return (vargp);
+	pthread_mutex_lock(&philo->data->forks[philo->right]);
+	if (casualty(philo->data))
+		return (NULL);
 	print_message(philo->data, philo->id, "has taken a fork\n");
+	pthread_mutex_lock(&philo->data->eat_check);
 	philo->eat_time = get_time();
-	print_message(philo->data, philo->id, "is eating\n");
 	philo->eaten++;
+	pthread_mutex_unlock(&philo->data->eat_check);
+	print_message(philo->data, philo->id, "is eating\n");
 	fancy_eat(philo);
-	pthread_mutex_unlock(&philo->data->forks[philo->id - 1]);
-	pthread_mutex_unlock(&philo->data->forks[right_fork]);
+	pthread_mutex_unlock(&philo->data->forks[philo->left]);
+	pthread_mutex_unlock(&philo->data->forks[philo->right]);
 	sleep_think(philo);
 	return (vargp);
-}
-
-void	make_threads(t_data *data)
-{
-	unsigned long	i;
-	t_philo			*philos;
-	pthread_t		die_thread_id;
-
-	i = 0;
-	philos = malloc((data->philosophers + 1) * sizeof(t_philo));
-	if (philos == NULL)
-		printf("Error: Malloc failed\n");
-	data->start_time = get_time();
-	while (i < data->philosophers)
-	{
-		philos[i].id = i + 1;
-		philos[i].data = data;
-		philos[i].eat_time = get_time();//data->start_time; // this created segfault
-		philos[i].eaten = 0;
-		pthread_create(&(philos[i].thread_id), NULL, eat, (void *)&philos[i]);
-		i++;
-	}
-	pthread_create(&die_thread_id, NULL, die, (void *)&philos);
-	while (i > 0)
-	{
-		pthread_join(philos[i].thread_id, NULL);
-		i--;
-	}
-	philos[i].data->done = 1;
-	pthread_join(die_thread_id, NULL);
-	return ;
 }
 
 // 1 philosopher dies too early

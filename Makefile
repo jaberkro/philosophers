@@ -6,12 +6,12 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/05/23 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/06/03 19:55:01 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/06/04 16:12:38 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-FLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
+FLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 INC = -I ./include
 
 SRC_DIR = src
