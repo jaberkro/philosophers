@@ -6,11 +6,34 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/10 16:32:38 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/10 17:47:53 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	take_fork(t_philo *philo, int lr)
+{
+	if (casualty(philo->data))
+	{
+		if (lr == 1)
+			pthread_mutex_unlock(&philo->data->forks[philo->left]);
+		return (0);
+	}
+	if (lr == 0)
+		pthread_mutex_lock(&philo->data->forks[philo->left]);
+	else
+		pthread_mutex_lock(&philo->data->forks[philo->right]);
+	if (casualty(philo->data))
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->left]);
+		if (lr == 1)
+			pthread_mutex_unlock(&philo->data->forks[philo->right]);
+		return (0);
+	}
+	print_message(philo->data, philo->id, "has taken a fork\n");
+	return (1);
+}
 
 int	sleep_and_think(t_philo	*philo)
 {
@@ -26,20 +49,20 @@ int	sleep_and_think(t_philo	*philo)
 
 int	eat_spaghetti(t_philo	*philo)
 {
-	if (casualty(philo->data))
+	if (!take_fork(philo, 0))
 		return (0);
-	pthread_mutex_lock(&philo->data->forks[philo->left]);
-	if (casualty(philo->data))
+	if (!take_fork(philo, 1))
 		return (0);
-	print_message(philo->data, philo->id, "has taken a fork\n");
-	pthread_mutex_lock(&philo->data->forks[philo->right]);
-	if (casualty(philo->data))
-		return (0);
-	print_message(philo->data, philo->id, "has taken a fork\n");
 	pthread_mutex_lock(&philo->data->eat_check);
 	philo->eat_time = get_time();
 	philo->eaten++;
 	pthread_mutex_unlock(&philo->data->eat_check);
+	if (casualty(philo->data))
+	{
+		pthread_mutex_unlock(&philo->data->forks[philo->left]);
+		pthread_mutex_unlock(&philo->data->forks[philo->right]);
+		return (0);
+	}
 	print_message(philo->data, philo->id, "is eating\n");
 	fancy_eat(philo);
 	pthread_mutex_unlock(&philo->data->forks[philo->left]);
@@ -53,7 +76,7 @@ static	void	*thread(void *vargp)
 
 	philo = (t_philo *)vargp;
 	if (philo->id % 2 == 0)
-		usleep(100);
+		usleep(200);
 	while (philo->eaten < philo->data->times_must_eat)
 	{
 		if (eat_spaghetti(philo) == 0)
@@ -83,9 +106,8 @@ static void	create_threads(t_data *data, t_philo **philos)
 		pthread_join((*philos)[i - 1].thread_id, NULL);
 		i--;
 	}
-	pthread_mutex_lock(&(*philos)[0].data->casualty_check);
-	(*philos)[0].data->done = 1;
-	pthread_mutex_unlock(&(*philos)[0].data->casualty_check);
+	if ((*philos)[0].data->philosophers > 1)
+		(*philos)[0].data->done = 1;
 	pthread_join(die_thread_id, NULL);
 }
 
@@ -129,7 +151,6 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!parsing(argc, argv, &data, &philos))
 		return (1);
-	//make_threads(&data, &philos);
 	create_threads(&data, &philos);
 	return (0);
 }

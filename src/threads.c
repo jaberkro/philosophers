@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/10 16:35:39 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/10 17:29:31 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,18 @@ int	casualty(t_data *data)
 {
 	int	dead;
 
-	dead = 0;
-	pthread_mutex_lock(&data->eat_check);
-	if (data->done)
-		dead = 1;
-	pthread_mutex_unlock(&data->eat_check);
+	dead = data->done;
 	return (dead);
 }
 
 int	die_check(t_philo *philo, unsigned long current_time)
 {
 	pthread_mutex_lock(&philo->data->eat_check);
-	if (current_time - philo->eat_time > philo->data->time_to_die && \
+	if (current_time - philo->eat_time > philo->data->time_to_die + 1 && \
 		philo->eaten < philo->data->times_must_eat)
 	{
 		print_message(philo->data, philo->id, "died\n");
-		pthread_mutex_lock(&philo->data->casualty_check);
 		philo->data->done = 1;
-		pthread_mutex_unlock(&philo->data->casualty_check);
 		pthread_mutex_unlock(&philo->data->eat_check);
 		return (1);
 	}
@@ -116,47 +110,47 @@ void	*die_thread(void *vargp)
 // 	}
 // }
 
-void	sleep_think(t_philo *philo)
-{
-	if (casualty(philo->data))
-		return ;
-	print_message(philo->data, philo->id, "is sleeping\n");
-	beauty_sleep(philo);
-	if (casualty(philo->data))
-		return ;
-	print_message(philo->data, philo->id, "is thinking\n");
-	pthread_mutex_lock(&philo->data->eat_check);
-	if (philo->eaten != philo->data->times_must_eat && !casualty(philo->data))
-		eat((void *)philo);
-	pthread_mutex_unlock(&philo->data->eat_check);
-}
+// void	sleep_think(t_philo *philo)
+// {
+// 	if (casualty(philo->data))
+// 		return ;
+// 	print_message(philo->data, philo->id, "is sleeping\n");
+// 	beauty_sleep(philo);
+// 	if (casualty(philo->data))
+// 		return ;
+// 	print_message(philo->data, philo->id, "is thinking\n");
+// 	pthread_mutex_lock(&philo->data->eat_check);
+// 	if (philo->eaten != philo->data->times_must_eat && !casualty(philo->data))
+// 		eat((void *)philo);
+// 	pthread_mutex_unlock(&philo->data->eat_check);
+// }
 
-void	*eat(void *vargp)
-{
-	t_philo		*philo;
+// void	*eat(void *vargp)
+// {
+// 	t_philo		*philo;
 
-	philo = (t_philo *)vargp;
-	if (philo->id % 2 == 0 && philo->eaten == 0)
-		usleep(150); // does this cause the problem of greedy fork takers?
-	pthread_mutex_lock(&philo->data->forks[philo->left]);
-	if (casualty(philo->data))
-		return (NULL);
-	print_message(philo->data, philo->id, "has taken a fork\n");
-	pthread_mutex_lock(&philo->data->forks[philo->right]);
-	if (casualty(philo->data))
-		return (NULL);
-	print_message(philo->data, philo->id, "has taken a fork\n");
-	pthread_mutex_lock(&philo->data->eat_check);
-	philo->eat_time = get_time();
-	philo->eaten++;
-	pthread_mutex_unlock(&philo->data->eat_check);
-	print_message(philo->data, philo->id, "is eating\n");
-	fancy_eat(philo);
-	pthread_mutex_unlock(&philo->data->forks[philo->left]);
-	pthread_mutex_unlock(&philo->data->forks[philo->right]);
-	sleep_think(philo);
-	return (vargp);
-}
+// 	philo = (t_philo *)vargp;
+// 	if (philo->id % 2 == 0 && philo->eaten == 0)
+// 		usleep(150); // does this cause the problem of greedy fork takers?
+// 	pthread_mutex_lock(&philo->data->forks[philo->left]);
+// 	if (casualty(philo->data))
+// 		return (NULL);
+// 	print_message(philo->data, philo->id, "has taken a fork\n");
+// 	pthread_mutex_lock(&philo->data->forks[philo->right]);
+// 	if (casualty(philo->data))
+// 		return (NULL);
+// 	print_message(philo->data, philo->id, "has taken a fork\n");
+// 	pthread_mutex_lock(&philo->data->eat_check);
+// 	philo->eat_time = get_time();
+// 	philo->eaten++;
+// 	pthread_mutex_unlock(&philo->data->eat_check);
+// 	print_message(philo->data, philo->id, "is eating\n");
+// 	fancy_eat(philo);
+// 	pthread_mutex_unlock(&philo->data->forks[philo->left]);
+// 	pthread_mutex_unlock(&philo->data->forks[philo->right]);
+// 	sleep_think(philo);
+// 	return (vargp);
+// }
 
 // 1 philosopher dies too early
 // 9 philosophers die with a segfault
