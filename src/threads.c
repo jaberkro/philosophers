@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/04 19:28:12 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/10 16:35:39 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,39 +35,86 @@ int	casualty(t_data *data)
 	return (dead);
 }
 
-void	*die(void *vargp)
+int	die_check(t_philo *philo, unsigned long current_time)
+{
+	pthread_mutex_lock(&philo->data->eat_check);
+	if (current_time - philo->eat_time > philo->data->time_to_die && \
+		philo->eaten < philo->data->times_must_eat)
+	{
+		print_message(philo->data, philo->id, "died\n");
+		pthread_mutex_lock(&philo->data->casualty_check);
+		philo->data->done = 1;
+		pthread_mutex_unlock(&philo->data->casualty_check);
+		pthread_mutex_unlock(&philo->data->eat_check);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->eat_check);
+	return (0);
+}
+
+void	*die_thread(void *vargp)
 {
 	t_philo			**philos;
 	unsigned long	i;
-	unsigned long	philosophers;
 	unsigned long	current_time;
 
 	philos = vargp;
-	philosophers = (*philos)[0].data->philosophers;
 	while (42)
 	{
 		i = 0;
-		while (i < philosophers)
+		current_time = get_time();
+		while (i < (*philos)[0].data->philosophers && \
+			!casualty((*philos)[i].data))
 		{
-			current_time = get_time();
-			if (philosophers == 1)
-				usleep((*philos)[i].data->time_to_die * 1000);
-			pthread_mutex_lock(&(*philos)[i].data->eat_check);
-			if (((*philos)[i].eat_time > 0 && (*philos)[i].eaten != (*philos)[i].data->times_must_eat && current_time - (*philos)[i].eat_time > (*philos)[i].data->time_to_die) \
-				|| (philosophers == 1))
+			if (die_check(&(*philos)[i], current_time) == 1)
 			{
-				print_message((*philos)[i].data, (*philos)[i].id, "died\n");
-				(*philos)[i].data->done = 1;
+				// printf("hi the die_thread will die here 1\n");	
 				return (NULL);
 			}
-			pthread_mutex_unlock(&(*philos)[i].data->eat_check);
 			i++;
 		}
 		if (casualty((*philos)[0].data))
+		{
+			// printf("hi the die_thread will die here 2\n");
 			return (NULL);
+		}
 		usleep(10);
 	}
 }
+
+// void	*die(void *vargp)
+// {
+// 	t_philo			**philos;
+// 	unsigned long	i;
+// 	unsigned long	philosophers;
+// 	unsigned long	current_time;
+
+// 	philos = vargp;
+// 	philosophers = (*philos)[0].data->philosophers;
+// 	while (42)
+// 	{
+// 		i = 0;
+// 		while (i < philosophers)
+// 		{
+// 			current_time = get_time();
+// 			if (philosophers == 1)
+// 				usleep((*philos)[i].data->time_to_die * 1000);
+// 			pthread_mutex_lock(&(*philos)[i].data->eat_check);
+// 			if (((*philos)[i].eat_time > 0 && (*philos)[i].eaten != (*philos)[i].data->times_must_eat && current_time - (*philos)[i].eat_time > (*philos)[i].data->time_to_die) \
+// 				|| (philosophers == 1))
+// 			{
+// 				print_message((*philos)[i].data, (*philos)[i].id, "died\n");
+// 				(*philos)[i].data->done = 1;
+// 				return (NULL);
+// 			}
+// 			pthread_mutex_unlock(&(*philos)[i].data->eat_check);
+// 			i++;
+// 		}
+// 		if (casualty((*philos)[0].data))
+// 			return (NULL);
+// 		usleep(10);
+// 	}
+// }
 
 void	sleep_think(t_philo *philo)
 {
