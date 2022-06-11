@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/10 13:49:46 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/11 15:17:19 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,8 @@ int	parsing(int argc, char **argv, t_data *data, t_philo **philos)
 		return (0);
 	pthread_mutex_init(&(data->print), NULL);
 	pthread_mutex_init(&(data->eat_check), NULL);
-	pthread_mutex_init(&(data->casualty_check), NULL);
-	pthread_mutex_lock(&data->casualty_check);
 	data->done = 0;
-	pthread_mutex_unlock(&data->casualty_check);
 	if (!init_philos(data, philos))
 		return (0);
-	data->start_time = get_time();
 	return (1);
 }

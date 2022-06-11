@@ -6,21 +6,26 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/28 16:46:52 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/10 17:29:31 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/11 15:45:42 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	print_message(t_data *data, int id, char *activity)
+int	print_message(t_data *data, int id, char *activity)
 {
 	unsigned long	time_stamp;
 
 	time_stamp = (get_time() - data->start_time);
 	pthread_mutex_lock(&data->print);
+	if (data->done)
+	{
+		pthread_mutex_unlock(&data->print);
+		return (0);
+	}
 	printf("%lu %d %s", time_stamp, id, activity);
 	pthread_mutex_unlock(&data->print);
-	return ;
+	return (1);
 }
 
 int	casualty(t_data *data)
@@ -31,15 +36,19 @@ int	casualty(t_data *data)
 	return (dead);
 }
 
-int	die_check(t_philo *philo, unsigned long current_time)
+int	die_check(t_philo *philo)
 {
+	unsigned long	current_time;
+
+	current_time = get_time();
 	pthread_mutex_lock(&philo->data->eat_check);
-	if (current_time - philo->eat_time > philo->data->time_to_die + 1 && \
+	if (current_time - philo->eat_time > philo->data->time_to_die + 5 && \
 		philo->eaten < philo->data->times_must_eat)
 	{
-		print_message(philo->data, philo->id, "died\n");
-		philo->data->done = 1;
 		pthread_mutex_unlock(&philo->data->eat_check);
+		if (!print_message(philo->data, philo->id, "died\n"))
+			return (1);
+		philo->data->done = 1;
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->data->eat_check);
@@ -50,26 +59,22 @@ void	*die_thread(void *vargp)
 {
 	t_philo			**philos;
 	unsigned long	i;
-	unsigned long	current_time;
 
 	philos = vargp;
 	while (42)
 	{
 		i = 0;
-		current_time = get_time();
 		while (i < (*philos)[0].data->philosophers && \
-			!casualty((*philos)[i].data))
+			!(*philos)[i].data->done)
 		{
-			if (die_check(&(*philos)[i], current_time) == 1)
+			if (die_check(&(*philos)[i]) == 1)
 			{
-				// printf("hi the die_thread will die here 1\n");	
 				return (NULL);
 			}
 			i++;
 		}
-		if (casualty((*philos)[0].data))
+		if ((*philos)[0].data->done)
 		{
-			// printf("hi the die_thread will die here 2\n");
 			return (NULL);
 		}
 		usleep(10);

@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/10 15:58:54 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/11 15:16:59 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ typedef struct s_data {
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
 	pthread_mutex_t	eat_check;
-	pthread_mutex_t	casualty_check;
 	int				done;
 }	t_data;
 
@@ -52,9 +51,8 @@ unsigned long	get_time(void);
 void			*eat(void *vargp);
 void			*die_thread(void *vargp);
 void			sleep_think(t_philo *philo);
-void			beauty_sleep(t_philo *philo);
-void			fancy_eat(t_philo *philo);
+void			beauty_sleep(unsigned long start, unsigned long sleep);
 int				casualty(t_data *data);
-void			print_message(t_data *data, int id, char *activity);
+int				print_message(t_data *data, int id, char *activity);
 
 #endif
