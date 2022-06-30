@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:04:08 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 14:46:04 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 15:14:49 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	update_eat_time(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->eat_check);
 	philo->eat_time = get_time();
-	//printf("...............id: %d , new time: %lu\n", philo->id, philo->eat_time - philo->data->start_time);
 	philo->eaten++;
 	pthread_mutex_unlock(&philo->data->eat_check);
 }
@@ -56,12 +55,11 @@ int	die_check(t_philo *philo)
 
 	pthread_mutex_lock(&philo->data->eat_check);
 	current_time = get_time();
-	if (current_time - philo->eat_time > philo->data->time_to_die + 0 && \
-		philo->eaten < philo->data->times_must_eat) // used to be time_to_die + 5
+	if (current_time - philo->eat_time > philo->data->time_to_die && \
+		philo->eaten < philo->data->times_must_eat)
 	{
-		printf("philo: %d, last time eaten: %lu\n", philo->id, philo->eat_time - philo->data->start_time);
 		pthread_mutex_unlock(&philo->data->eat_check);
-		if (!print_message(philo->data, philo->id, "died\n"))
+		if (!print_message(philo->data, philo->id, "\x1B[31mdied\n"))
 			return (1);
 		pthread_mutex_lock(&philo->data->eat_check);
 		philo->data->done = 1;

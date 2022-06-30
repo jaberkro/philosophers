@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:12:41 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/03 12:56:39 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 15:06:58 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,14 @@ static int	check_is_valid(char *to_check)
 
 	i = 0;
 	if (to_check[0] == '0' && !to_check[1])
-		return (print_return("Error: inputs should be higher than 0", 0));
+		return (print_return("Error: no valid input", 0));
 	if (to_check[0] == '+' && !to_check[1])
-		return (print_return("Error: + is not an unsigned long", 0));
+		return (print_return("Error: no valid input", 0));
 	while (to_check[i])
 	{
 		if (!ft_is_digit(to_check[i]) && (i != 0 || to_check[i] != '+'))
 		{
-			printf("Error: %s is not an unsigned long\n", to_check);
+			printf("Error: %s is no valid input\n", to_check);
 			return (0);
 		}
 		i++;

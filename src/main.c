@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 14:34:00 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 15:03:01 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	print_message(t_data *data, int id, char *activity)
 		return (0);
 	}
 	pthread_mutex_unlock(&data->eat_check);
-	printf("%lu %d %s", time_stamp, id, activity);
+	printf("%lu %d %s\x1B[0m", time_stamp, id, activity);
 	pthread_mutex_unlock(&data->print);
 	return (1);
 }
