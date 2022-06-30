@@ -6,7 +6,7 @@
 #    By: jaberkro <jaberkro@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/05/23 12:14:46 by jaberkro      #+#    #+#                  #
-#    Updated: 2022/06/11 13:42:44 by jaberkro      ########   odam.nl          #
+#    Updated: 2022/06/30 12:39:51 by jaberkro      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ SRC =	$(SRC_DIR)/main.c \
 		$(SRC_DIR)/error.c \
 		$(SRC_DIR)/parsing.c \
 		$(SRC_DIR)/time.c \
-		$(SRC_DIR)/threads.c
+		$(SRC_DIR)/eat_sleep.c
 OBJ = $(subst $(SRC_DIR), $(BUILD_DIR), $(SRC:.c=.o))
 
 # COLORS

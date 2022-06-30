@@ -6,11 +6,24 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/11 15:17:19 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 12:46:06 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	destroy_mutexes(t_data *data)
+{
+	unsigned long	i;
+
+	i = 0;
+	while (i < data->philosophers)
+	{
+		pthread_mutex_destroy(&data->sporks[i]);
+	}
+	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->eat_check);
+}
 
 static int	init_philos(t_data *data, t_philo **philos)
 {
@@ -38,12 +51,12 @@ static int	init_forks(t_data *data)
 	unsigned long	i;
 
 	i = 0;
-	data->forks = malloc (data->philosophers * sizeof(pthread_mutex_t));
-	if (data->forks == NULL)
+	data->sporks = malloc (data->philosophers * sizeof(pthread_mutex_t));
+	if (data->sporks == NULL)
 		return (print_return("Error: malloc failed\n", 0));
 	while (i < data->philosophers)
 	{
-		pthread_mutex_init(&(data->forks[i]), NULL);
+		pthread_mutex_init(&(data->sporks[i]), NULL);
 		i++;
 	}
 	return (1);

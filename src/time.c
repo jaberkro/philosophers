@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:04:08 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/11 15:35:22 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 12:38:59 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,38 +23,40 @@ unsigned long	get_time(void)
 	return (current_time);
 }
 
-void	beauty_sleep(unsigned long start, unsigned long sleep)
+void	update_eat_time(t_philo *philo)
 {
-	while (get_time() < start + sleep)
-		usleep(10);
+	pthread_mutex_lock(&philo->data->eat_check);
+	philo->eat_time = get_time();
+	philo->eaten++;
+	pthread_mutex_unlock(&philo->data->eat_check);
 }
 
-// void	beauty_sleep(t_philo *philo)
-// {
-// 	unsigned long	to_sleep;
-// 	unsigned long	starting_time;
+void	beauty_sleep(unsigned long start, unsigned long sleep)
+{
+	int	sleep_time;
 
-// 	starting_time = philo->eat_time + philo->data->time_to_eat - philo->data->start_time;
-// 	to_sleep = philo->data->time_to_sleep;
-// 	while (42)
-// 	{
-// 		if (get_time() - philo->data->start_time >= starting_time + to_sleep)
-// 			return ;
-// 		usleep(10);
-// 	}
-// }
+	sleep_time = 100;
+	while (get_time() + sleep_time < start + sleep)
+		usleep(sleep_time);
+}
 
-// void	fancy_eat(t_philo *philo)
-// {
-// 	unsigned long	to_eat;
-// 	unsigned long	starting_time;
+int	die_check(t_philo *philo)
+{
+	unsigned long	current_time;
 
-// 	starting_time = get_time();
-// 	to_eat = philo->data->time_to_eat;
-// 	while (42)
-// 	{
-// 		if (get_time() >= starting_time + to_eat)
-// 			return ;
-// 		usleep(10);
-// 	}
-// }
+	current_time = get_time();
+	pthread_mutex_lock(&philo->data->eat_check);
+	if (current_time - philo->eat_time > philo->data->time_to_die + 5 && \
+		philo->eaten < philo->data->times_must_eat) // used to be time_to_die + 5
+	{
+		pthread_mutex_unlock(&philo->data->eat_check);
+		if (!print_message(philo->data, philo->id, "died\n"))
+			return (1);
+		philo->data->done = 1;
+		if (philo->data->philosophers == 1)
+			pthread_mutex_unlock(&philo->data->sporks[0]);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->eat_check);
+	return (0);
+}
