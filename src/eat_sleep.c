@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 12:13:51 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 12:18:54 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 14:37:23 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	sleep_and_think(t_philo	*philo)
 	sleep_time = philo->data->time_to_sleep;
 	if (!print_message(philo->data, philo->id, "is sleeping\n"))
 		return (0);
-	beauty_sleep(philo->eat_time + philo->data->time_to_eat, sleep_time);
+	second_sleep(sleep_time);
 	if (!print_message(philo->data, philo->id, "is thinking\n"))
 		return (0);
 	return (1);
@@ -48,9 +48,9 @@ int	eat_spaghetti(t_philo	*philo)
 	if (!take_spork(philo, philo->right))
 		return (release_sporks(philo, philo->left, philo->right));
 	update_eat_time(philo);
-	if (!print_message(philo->data, philo->id, "is eating\n"))
+    if (!print_message(philo->data, philo->id, "is eating\n"))
 		return (release_sporks(philo, philo->left, philo->right));
-	beauty_sleep(philo->eat_time, philo->data->time_to_eat);
+	second_sleep(philo->data->time_to_eat);
 	release_sporks(philo, philo->left, philo->right);
 	return (1);
 }

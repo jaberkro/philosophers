@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 12:48:25 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 14:34:00 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,16 @@ int	print_message(t_data *data, int id, char *activity)
 {
 	unsigned long	time_stamp;
 
-	time_stamp = (get_time() - data->start_time);
 	pthread_mutex_lock(&data->print);
+	time_stamp = (get_time() - data->start_time);
+	pthread_mutex_lock(&data->eat_check);
 	if (data->done)
 	{
 		pthread_mutex_unlock(&data->print);
+		pthread_mutex_unlock(&data->eat_check);
 		return (0);
 	}
+	pthread_mutex_unlock(&data->eat_check);
 	printf("%lu %d %s", time_stamp, id, activity);
 	pthread_mutex_unlock(&data->print);
 	return (1);
@@ -41,16 +44,12 @@ void	*die_thread(void *vargp)
 			!(*philos)[i].data->done)
 		{
 			if (die_check(&(*philos)[i]) == 1)
-			{
 				return (NULL);
-			}
 			i++;
 		}
 		if ((*philos)[0].data->done)
-		{
 			return (NULL);
-		}
-		usleep(10);
+		usleep(100);
 	}
 }
 
@@ -59,8 +58,8 @@ static	void	*philo_thread(void *vargp)
 	t_philo		*philo;
 
 	philo = (t_philo *)vargp;
-	if (philo->id % 2 == 0)
-		beauty_sleep(philo->data->start_time, 20); // used to be 200, newer was 50
+	if (philo->id % 2 == 1)
+		second_sleep(philo->data->time_to_eat / 2);
 	while (philo->eaten < philo->data->times_must_eat)
 	{
 		if (eat_spaghetti(philo) == 0)

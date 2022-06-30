@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 12:46:06 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 13:43:30 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	destroy_mutexes(t_data *data)
 	while (i < data->philosophers)
 	{
 		pthread_mutex_destroy(&data->sporks[i]);
+		i++;
 	}
 	pthread_mutex_destroy(&data->print);
 	pthread_mutex_destroy(&data->eat_check);

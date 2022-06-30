@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 12:46:16 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 14:14:29 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ int				print_message(t_data *data, int id, char *activity);
 int				eat_spaghetti(t_philo	*philo);
 int				sleep_and_think(t_philo	*philo);
 void			destroy_mutexes(t_data *data);
+void	second_sleep(unsigned long sleep_time);
 
 #endif
