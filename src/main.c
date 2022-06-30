@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 15:03:01 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 15:18:10 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,3 @@ int	main(int argc, char **argv)
 	destroy_mutexes(&data);
 	return (0);
 }
-
-// is 020 valid input?
-// and what about +20?
-// "" can be given as input as well now, better not?
-
-// does not work yet above 50 philos
-//sometimes after dying the program blocks
