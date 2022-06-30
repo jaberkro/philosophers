@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 14:14:29 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:59:50 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,16 @@ int				print_return(char *message, int value);
 int				error_check(int argc, char **argv);
 
 int				parsing(int argc, char **argv, t_data *data, t_philo **philos);
+void			destroy_mutexes(t_data *data);
+
 unsigned long	get_time(void);
 void			update_eat_time(t_philo *philo);
+void			beauty_sleep(unsigned long sleep_time);
 int				die_check(t_philo *philo);
 
-void			*eat(void *vargp);
-void			*die_thread(void *vargp);
-void			sleep_think(t_philo *philo);
-void			beauty_sleep(unsigned long start, unsigned long sleep);
-int				casualty(t_data *data);
 int				print_message(t_data *data, int id, char *activity);
 
 int				eat_spaghetti(t_philo	*philo);
 int				sleep_and_think(t_philo	*philo);
-void			destroy_mutexes(t_data *data);
-void	second_sleep(unsigned long sleep_time);
 
 #endif

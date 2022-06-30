@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 15:18:10 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 17:00:11 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	print_message(t_data *data, int id, char *activity)
 	return (1);
 }
 
-void	*die_thread(void *vargp)
+static void	*die_thread(void *vargp)
 {
 	t_philo			**philos;
 	unsigned long	i;
@@ -59,7 +59,7 @@ static	void	*philo_thread(void *vargp)
 
 	philo = (t_philo *)vargp;
 	if (philo->id % 2 == 1)
-		second_sleep(philo->data->time_to_eat / 2);
+		beauty_sleep(philo->data->time_to_eat / 2);
 	while (philo->eaten < philo->data->times_must_eat)
 	{
 		if (eat_spaghetti(philo) == 0)

@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:04:08 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 15:14:49 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:53:35 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,7 @@ void	update_eat_time(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->eat_check);
 }
 
-void	beauty_sleep(unsigned long start, unsigned long sleep)
-{
-	int	sleep_time;
-
-	sleep_time = 50;
-	while (get_time() + sleep_time < start + sleep)
-		usleep(sleep_time);
-}
-
-void	second_sleep(unsigned long sleep_time)
+void	beauty_sleep(unsigned long sleep_time)
 {
 	unsigned long	start_time;
 
