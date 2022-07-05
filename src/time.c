@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:04:08 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 16:53:35 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/05 18:00:22 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,18 @@ void	beauty_sleep(unsigned long sleep_time)
 	start_time = get_time();
 	while (get_time() - start_time < sleep_time)
 		usleep(100);
+}
+
+int	casualty(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->eat_check);
+	if (philo->data->done)
+	{
+		pthread_mutex_unlock(&philo->data->eat_check);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->eat_check);
+	return (0);
 }
 
 int	die_check(t_philo *philo)

@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 17:00:11 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/05 18:03:48 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,13 @@ static void	*die_thread(void *vargp)
 	while (42)
 	{
 		i = 0;
-		while (i < (*philos)[0].data->philosophers && \
-			!(*philos)[i].data->done)
+		while (i < (*philos)[0].data->philosophers)
 		{
 			if (die_check(&(*philos)[i]) == 1)
 				return (NULL);
 			i++;
 		}
-		if ((*philos)[0].data->done)
+		if (casualty(&(*philos)[0]))
 			return (NULL);
 		usleep(100);
 	}
@@ -88,8 +87,10 @@ static void	create_threads(t_data *data, t_philo **philos)
 		pthread_join((*philos)[i - 1].tid, NULL);
 		i--;
 	}
-	if ((*philos)[0].data->philosophers > 1)
+	pthread_mutex_lock(&(*philos)[0].data->eat_check);
+	if ((*philos)[0].data->philosophers > 1 && (*philos)[0].data->done == 0)
 		(*philos)[0].data->done = 1;
+	pthread_mutex_unlock(&(*philos)[0].data->eat_check);
 	pthread_join(die_thread_id, NULL);
 }
 
@@ -104,5 +105,7 @@ int	main(int argc, char **argv)
 		return (1);
 	create_threads(&data, &philos);
 	destroy_mutexes(&data);
+	free(data.sporks);
+	free(philos);
 	return (0);
 }

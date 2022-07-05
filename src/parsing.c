@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/06/30 13:43:30 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/05 17:15:57 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	init_philos(t_data *data, t_philo **philos)
 	return (1);
 }
 
-static int	init_forks(t_data *data)
+static int	init_sporks(t_data *data)
 {
 	unsigned long	i;
 
@@ -63,7 +63,7 @@ static int	init_forks(t_data *data)
 	return (1);
 }
 
-static unsigned long	atoul(const char *input)
+unsigned long	atoul(const char *input)
 {
 	unsigned long	number;
 	int				i;
@@ -89,7 +89,7 @@ int	parsing(int argc, char **argv, t_data *data, t_philo **philos)
 	data->times_must_eat = -1;
 	if (argc == 6)
 		data->times_must_eat = atoul(argv[5]);
-	if (!init_forks(data))
+	if (!init_sporks(data))
 		return (0);
 	pthread_mutex_init(&(data->print), NULL);
 	pthread_mutex_init(&(data->eat_check), NULL);
