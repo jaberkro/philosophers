@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/12 14:41:22 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 14:50:27 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	parsing(int argc, char **argv, t_data *data, t_philo **philos)
 	data->time_to_die = atoul(argv[2]);
 	data->time_to_eat = atoul(argv[3]);
 	data->time_to_sleep = atoul(argv[4]);
-	data->times_must_eat = -1;
+	data->times_must_eat = 0;
 	if (argc == 6)
 		data->times_must_eat = atoul(argv[5]);
 	if (!init_sporks(data))
