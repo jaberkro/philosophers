@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/25 13:34:16 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/12 14:50:27 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 16:07:42 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	destroy_mutexes(t_data *data)
 		i++;
 	}
 	pthread_mutex_destroy(&data->print);
-	pthread_mutex_destroy(&data->eat_check);
+	pthread_mutex_destroy(&data->eat_dead);
 }
 
 static int	init_philos(t_data *data, t_philo **philos)
@@ -93,7 +93,7 @@ int	parsing(int argc, char **argv, t_data *data, t_philo **philos)
 	if (!init_sporks(data))
 		return (0);
 	pthread_mutex_init(&(data->print), NULL);
-	pthread_mutex_init(&(data->eat_check), NULL);
+	pthread_mutex_init(&(data->eat_dead), NULL);
 	data->done = 0;
 	if (!init_philos(data, philos))
 		return (0);
