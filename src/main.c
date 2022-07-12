@@ -6,30 +6,14 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/05 18:03:48 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 14:44:56 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	print_message(t_data *data, int id, char *activity)
-{
-	unsigned long	time_stamp;
-
-	pthread_mutex_lock(&data->print);
-	time_stamp = (get_time() - data->start_time);
-	pthread_mutex_lock(&data->eat_check);
-	if (data->done)
-	{
-		pthread_mutex_unlock(&data->print);
-		pthread_mutex_unlock(&data->eat_check);
-		return (0);
-	}
-	pthread_mutex_unlock(&data->eat_check);
-	printf("%lu %d %s\x1B[0m", time_stamp, id, activity);
-	pthread_mutex_unlock(&data->print);
-	return (1);
-}
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
 
 static void	*die_thread(void *vargp)
 {
@@ -57,8 +41,8 @@ static	void	*philo_thread(void *vargp)
 	t_philo		*philo;
 
 	philo = (t_philo *)vargp;
-	if (philo->id % 2 == 1)
-		beauty_sleep(philo->data->time_to_eat / 2);
+	if (philo->id % 2 == 0)
+		beauty_sleep(philo, philo->data->time_to_eat / 2);
 	while (philo->eaten < philo->data->times_must_eat)
 	{
 		if (eat_spaghetti(philo) == 0)
@@ -69,41 +53,56 @@ static	void	*philo_thread(void *vargp)
 	return (NULL);
 }
 
-static void	create_threads(t_data *data, t_philo **philos)
+static int	create_threads(t_data *data, t_philo **philos)
 {
 	unsigned long	i;
-	pthread_t		die_thread_id;
 
 	i = 0;
 	data->start_time = get_time();
 	while (i < data->philosophers)
 	{
-		pthread_create(&(*philos)[i].tid, NULL, philo_thread, &(*philos)[i]);
+		if (!pthread_create(&(*philos)[i].tid, NULL, philo_thread, &(*philos)[i]))
+			return (0);
 		i++;
 	}
-	pthread_create(&die_thread_id, NULL, die_thread, &(*philos));
-	while (i > 0)
+	if (!pthread_create(&data->die_tid, NULL, die_thread, &(*philos)))
+		return (0);
+	return (1);
+}
+
+static int	join_threads(t_data *data, t_philo **philos)
+{
+	unsigned long	i;
+
+	i = 0;
+	while (i < data->philosophers)
 	{
-		pthread_join((*philos)[i - 1].tid, NULL);
+		if (!pthread_join((*philos)[i].tid, NULL))
+			return (0);
 		i--;
 	}
 	pthread_mutex_lock(&(*philos)[0].data->eat_check);
 	if ((*philos)[0].data->philosophers > 1 && (*philos)[0].data->done == 0)
 		(*philos)[0].data->done = 1;
 	pthread_mutex_unlock(&(*philos)[0].data->eat_check);
-	pthread_join(die_thread_id, NULL);
+	if (!pthread_join((*philos)[i].data->die_tid, NULL))
+		return (0);
+	return (1);
 }
 
 int	main(int argc, char **argv)
 {
-	t_data	data;
-	t_philo	*philos;
+	t_data		data;
+	t_philo		*philos;
 
 	if (!error_check(argc, argv))
 		return (1);
 	if (!parsing(argc, argv, &data, &philos))
 		return (1);
-	create_threads(&data, &philos);
+	if (!create_threads(&data, &philos))
+		print_return("Error: Creating threads failed", 1);
+	if (!join_threads(&data, &philos))
+		print_return ("Error: Joining threads failed", 1);
 	destroy_mutexes(&data);
 	free(data.sporks);
 	free(philos);
