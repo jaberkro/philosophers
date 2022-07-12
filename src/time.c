@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:04:08 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/12 14:42:27 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 16:08:14 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,21 @@ unsigned long	get_time(void)
 
 void	update_eat_time(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->eat_check);
+	pthread_mutex_lock(&philo->data->eat_dead);
 	philo->eat_time = get_time();
 	philo->eaten++;
-	pthread_mutex_unlock(&philo->data->eat_check);
+	pthread_mutex_unlock(&philo->data->eat_dead);
 }
 
 int	casualty(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->eat_check);
+	pthread_mutex_lock(&philo->data->eat_dead);
 	if (philo->data->done)
 	{
-		pthread_mutex_unlock(&philo->data->eat_check);
+		pthread_mutex_unlock(&philo->data->eat_dead);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->eat_check);
+	pthread_mutex_unlock(&philo->data->eat_dead);
 	return (0);
 }
 
@@ -58,21 +58,22 @@ int	die_check(t_philo *philo)
 {
 	unsigned long	current_time;
 
-	pthread_mutex_lock(&philo->data->eat_check);
+	pthread_mutex_lock(&philo->data->eat_dead);
 	current_time = get_time();
 	if (current_time - philo->eat_time > philo->data->time_to_die && \
-		philo->eaten < philo->data->times_must_eat)
+	(philo->eaten < philo->data->times_must_eat || \
+	philo->data->times_must_eat == 0))
 	{
-		pthread_mutex_unlock(&philo->data->eat_check);
+		pthread_mutex_unlock(&philo->data->eat_dead);
 		if (!print_message(philo->data, philo->id, "\x1B[31mdied\n"))
 			return (1);
-		pthread_mutex_lock(&philo->data->eat_check);
+		pthread_mutex_lock(&philo->data->eat_dead);
 		philo->data->done = 1;
-		pthread_mutex_unlock(&philo->data->eat_check);
+		pthread_mutex_unlock(&philo->data->eat_dead);
 		if (philo->data->philosophers == 1)
 			pthread_mutex_unlock(&philo->data->sporks[0]);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->eat_check);
+	pthread_mutex_unlock(&philo->data->eat_dead);
 	return (0);
 }
