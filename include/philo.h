@@ -6,18 +6,13 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/05 18:00:40 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 16:06:11 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-# include <string.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
 # include <pthread.h>
-# include <sys/time.h>
 
 typedef struct s_data {
 	unsigned long	philosophers;
@@ -28,8 +23,9 @@ typedef struct s_data {
 	unsigned long	start_time;
 	pthread_mutex_t	*sporks;
 	pthread_mutex_t	print;
-	pthread_mutex_t	eat_check;
+	pthread_mutex_t	eat_dead;
 	int				done;
+	pthread_t		die_tid;
 }	t_data;
 
 typedef struct s_philo {
@@ -51,7 +47,7 @@ unsigned long	atoul(const char *input);
 
 unsigned long	get_time(void);
 void			update_eat_time(t_philo *philo);
-void			beauty_sleep(unsigned long sleep_time);
+void			beauty_sleep(t_philo *philo, unsigned long sleep_time);
 int				die_check(t_philo *philo);
 int				casualty(t_philo *philo);
 
