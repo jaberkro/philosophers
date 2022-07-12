@@ -6,17 +6,11 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:12:41 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/05 17:14:14 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 14:24:33 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	print_return(char *message, int value)
-{
-	printf("%s\n", message);
-	return (value);
-}
 
 static int	ft_is_digit(char c)
 {
@@ -30,10 +24,6 @@ static int	check_is_valid(char *to_check)
 	int	i;
 
 	i = 0;
-	if (to_check[0] == '0' && !to_check[1])
-		return (print_return("Error: invalid input", 0));
-	if (to_check[0] == '+' && !to_check[1])
-		return (print_return("Error: invalid input", 0));
 	while (to_check[i])
 	{
 		if ((!ft_is_digit(to_check[i]) && (i != 0 || to_check[i] != '+')) || \
