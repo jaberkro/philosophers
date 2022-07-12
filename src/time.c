@@ -6,11 +6,13 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/26 11:04:08 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/05 18:00:22 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/12 14:42:27 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <sys/time.h>
+#include <unistd.h>
 
 unsigned long	get_time(void)
 {
@@ -31,15 +33,6 @@ void	update_eat_time(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->eat_check);
 }
 
-void	beauty_sleep(unsigned long sleep_time)
-{
-	unsigned long	start_time;
-
-	start_time = get_time();
-	while (get_time() - start_time < sleep_time)
-		usleep(100);
-}
-
 int	casualty(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->eat_check);
@@ -50,6 +43,15 @@ int	casualty(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->data->eat_check);
 	return (0);
+}
+
+void	beauty_sleep(t_philo *philo, unsigned long sleep_time)
+{
+	unsigned long	start_time;
+
+	start_time = get_time();
+	while (get_time() - start_time < sleep_time && !casualty(philo))
+		usleep(100);
 }
 
 int	die_check(t_philo *philo)
