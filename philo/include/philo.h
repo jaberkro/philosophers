@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:05:19 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/12 16:06:11 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/13 17:12:12 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int				print_message(t_data *data, int id, char *activity);
 
 int				eat_spaghetti(t_philo	*philo);
 int				sleep_and_think(t_philo	*philo);
+int				philo_still_eating(t_philo *philo);
 
 void			free_philos(t_data *data, t_philo *philos);
 

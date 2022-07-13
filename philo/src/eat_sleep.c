@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 12:13:51 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/12 14:44:45 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/13 17:14:13 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,20 @@ int	eat_spaghetti(t_philo	*philo)
 	beauty_sleep(philo, philo->data->time_to_eat);
 	release_sporks(philo, philo->left, philo->right);
 	return (1);
+}
+
+int	philo_still_eating(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->eat_dead);
+	if (philo->eaten < philo->data->times_must_eat)
+	{
+		pthread_mutex_unlock(&philo->data->eat_dead);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->eat_dead);
+	if (philo->data->times_must_eat == 0 && !casualty(philo))
+	{
+		return (1);
+	}
+	return (0);
 }

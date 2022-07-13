@@ -6,7 +6,7 @@
 /*   By: jaberkro <jaberkro@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/05/23 18:08:37 by jaberkro      #+#    #+#                 */
-/*   Updated: 2022/07/12 16:10:38 by jaberkro      ########   odam.nl         */
+/*   Updated: 2022/07/13 17:15:22 by jaberkro      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ static	void	*loop(void *vargp)
 		sleep_time = 200;
 	if (philo->id % 2 == 0)
 		beauty_sleep(philo, sleep_time);
-	while (philo->eaten < philo->data->times_must_eat || \
-	(philo->data->times_must_eat == 0 && !casualty(philo)))
+	while (philo_still_eating(philo))
 	{
 		if (eat_spaghetti(philo) == 0)
 			return (NULL);
